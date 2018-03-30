@@ -7,3 +7,5 @@ doc/large
 example/tesseract4.html
 node_modules
 *.log
+/hocrjs/dist
+/vue-hocr/dist
