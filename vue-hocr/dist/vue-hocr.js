@@ -213,13 +213,17 @@ var singletonElement = null
 var singletonCounter = 0
 var isProduction = false
 var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
 
 // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
 // tags it will allow on a page
 var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
 
-module.exports = function (parentId, list, _isProduction) {
+module.exports = function (parentId, list, _isProduction, _options) {
   isProduction = _isProduction
+
+  options = _options || {}
 
   var styles = listToStyles(parentId, list)
   addStylesToDom(styles)
@@ -284,7 +288,7 @@ function createStyleElement () {
 
 function addStyle (obj /* StyleObjectPart */) {
   var update, remove
-  var styleElement = document.querySelector('style[data-vue-ssr-id~="' + obj.id + '"]')
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
 
   if (styleElement) {
     if (isProduction) {
@@ -365,6 +369,9 @@ function applyToTag (styleElement, obj) {
 
   if (media) {
     styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
   }
 
   if (sourceMap) {
@@ -1117,7 +1124,7 @@ var content = __webpack_require__(12);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("0cee75f0", content, false);
+var update = __webpack_require__(2)("f4f7a224", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -1387,7 +1394,7 @@ var content = __webpack_require__(16);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(2)("199fb537", content, false);
+var update = __webpack_require__(2)("071b2ace", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
